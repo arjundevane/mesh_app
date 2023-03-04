@@ -5,7 +5,7 @@ using MeshApp.Proto;
 using MeshApp.WorkInterface;
 using MeshApp.WorkStructure;
 using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
+using System.Reflection;
 using System.Runtime.Loader;
 using WorkOrchestrator.Services;
 using WorkOrchestrator.Statics;
@@ -37,44 +37,39 @@ namespace MeshApp.WorkOrchestrator
                 var inputType = System.Type.GetType(processStepInfo.RequestType) ?? typeof(object);
                 var outputType = System.Type.GetType(processStepInfo.ResponseType) ?? typeof(object);
 
+                var workerInterfaceType = typeof(IWorker<,>).MakeGenericType(new[] { inputType, outputType });
+
                 // Make logic processor method with types defined for the intent
-                /*
-                var getWorkerMethod = typeof(WorkerFactory).GetMethod(nameof(WorkerFactory.GetWorker));
-                if (getWorkerMethod is null)
-                    throw new MissingMethodException(nameof(WorkerFactory.GetWorker));
-
-                var concreteMethod = getWorkerMethod.MakeGenericMethod(new[] { inputType, outputType });
-                var logicProcessor = concreteMethod.Invoke(new WorkerFactory(), new object[] { assemblyLoadContext, processStepInfo });
-                */
-
-                var logicProcessor = FindAndInvokeMethod<object>(
-                    concreteClass: new WorkerFactory(), 
+                var logicProcessor = FindAndInvokeMethod(
+                    concreteClass: new WorkerFactory(),
                     methodName: nameof(WorkerFactory.GetWorker),
-                    genericArgumentTypes: new[] { inputType, outputType }, 
-                    methodArguments: new object[] { assemblyLoadContext, processStepInfo });
+                    genericArgumentTypes: new[] { inputType, outputType },
+                    methodArguments: new object[] { assemblyLoadContext, processStepInfo },
+                    responseType: workerInterfaceType);
                 // Processor cannot be null
                 if (logicProcessor is null)
                     throw new EntryPointNotFoundException(nameof(logicProcessor));
-
-                var workerInterfaceType = typeof(IWorker<,>).MakeGenericType(new[] { inputType, outputType });
+                
+                // Extract the work request payload and convert to inputType
+                var payload = FindAndInvokeMethod(
+                    concreteClass: request.Message.BaseMessage,
+                    methodName: nameof(Any.Unpack),
+                    genericArgumentTypes: new[] { inputType },
+                    methodArguments: Array.Empty<object>(),
+                    responseType: inputType);
 
                 // Get work performed by the worker
-                /*
-                var outputMethod = workerInterfaceType.GetMethod(nameof(IWorker<object, object>.RunAsync));
-                var payload = request.Message.BaseMessage.Unpack<FindCarByIdRequest>(); // --> HARDCODED = Make it generic
-                var outputTask = (Task<CarResponse>)outputMethod.Invoke(logicProcessor, new[] { payload });
-                */
-                var payload = request.Message.BaseMessage.Unpack<FindCarByIdRequest>(); // --> HARDCODED = Make it generic
-                var outputTask = FindAndInvokeMethod<Task<CarResponse>>(
+                var outputTask = FindAndInvokeMethodAsync(
                     concreteClass: logicProcessor,
                     methodName: nameof(IWorker<object, object>.RunAsync),
                     genericArgumentTypes: null,
-                    methodArguments: new object[] { payload });
+                    methodArguments: new object[] { payload },
+                    responseType: outputType);
                 // Task reference cannot be null
                 if (outputTask is null)
                     throw new EntryPointNotFoundException(nameof(outputTask));
 
-                var output = await outputTask;
+                var output = (IMessage)await outputTask;
 
                 var workResponse = new WorkResponse()
                 {
@@ -94,7 +89,7 @@ namespace MeshApp.WorkOrchestrator
             }
         }
 
-        private T? FindAndInvokeMethod<T>(object concreteClass, string methodName, System.Type[]? genericArgumentTypes, object[] methodArguments)
+        private object? FindAndInvokeMethod(object concreteClass, string methodName, System.Type[]? genericArgumentTypes, object[] methodArguments, System.Type responseType)
         {
             var methodInfo = concreteClass.GetType().GetMethod(methodName);
             if (methodInfo is null)
@@ -108,7 +103,30 @@ namespace MeshApp.WorkOrchestrator
             if (methodOutput == null)
                 return default;
 
-            return (T)methodOutput;
+            if (methodOutput.GetType().Equals(responseType)
+                || methodOutput.GetType().GetInterfaces().Any(i => i.Equals(responseType)))
+                return methodOutput;
+            else
+                throw new InvalidOperationException($"The generated output type [{methodOutput.GetType()}] does not match expected type [{responseType}]");
+        }
+
+        private async Task<object?> FindAndInvokeMethodAsync(object concreteClass, string methodName, System.Type[]? genericArgumentTypes, object[] methodArguments, System.Type responseType)
+        {
+            var methodInfo = concreteClass.GetType().GetMethod(methodName);
+            if (methodInfo is null)
+                throw new MissingMethodException(methodName);
+
+            var concreteMethodInfo = (genericArgumentTypes != null && genericArgumentTypes.Length > 0)
+                ? methodInfo.MakeGenericMethod(genericArgumentTypes)
+                : methodInfo;
+
+            var methodOutput = (Task?)concreteMethodInfo?.Invoke(concreteClass, methodArguments);
+            if (methodOutput == null)
+                return default;
+
+            await methodOutput.ConfigureAwait(false);
+            var resultProperty = methodOutput.GetType().GetProperty("Result");
+            return resultProperty?.GetValue(methodOutput);
         }
     }
 }
