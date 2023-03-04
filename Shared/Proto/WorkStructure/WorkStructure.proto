@@ -1,0 +1,42 @@
+﻿syntax="proto3";
+
+import "google/protobuf/any.proto";
+
+option csharp_namespace = "MeshApp.WorkStructure";
+
+message WorkerMessageBase {
+	// This should refer to the Proto message name, which will be same as the c# generated DTO name.
+	string message_type_name = 1;
+
+	// Raw proto is loaded here, decode into a concrete proto type before using.
+	google.protobuf.Any base_message = 100;
+}
+
+message WorkRequest {
+	string intent = 1001;
+	WorkerMessageBase message = 1002;
+}
+
+message WorkResponse {
+	string finished_intent = 1001;
+	WorkerMessageBase message = 1002;
+}
+
+service Worker {
+	rpc PerformIntendedWork (WorkRequest) returns (WorkResponse);
+}
+
+message ProcessStepInfo {
+	optional string name = 1;
+	optional CodeType code_type = 2;
+	optional string file_path = 3;
+	optional string request_type = 4;
+	optional string response_type = 5;
+
+	enum CodeType {
+		INVALID = 0;
+		C_SHARP = 1;
+		JAVA = 2;
+		NODE = 3;
+	}
+}

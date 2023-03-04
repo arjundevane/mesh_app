@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "DataConnector": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:60514;http://localhost:60515"
+    }
+  }
+}

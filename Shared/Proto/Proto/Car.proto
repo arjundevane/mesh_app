@@ -1,0 +1,29 @@
+﻿syntax="proto3";
+
+option csharp_namespace = "MeshApp.Proto";
+
+message Car {
+	optional string car_id = 1;
+	optional string name = 2;
+	optional string make = 3;
+	optional int32 year = 4;
+	optional Engine engine = 5;
+
+	message Engine {
+		optional int32 cylinders = 1;
+		optional double displacement = 2;
+		optional double horsepower = 3;
+	}
+}
+
+message FindCarByIdRequest {
+	optional string car_id = 1;
+}
+
+message CarResponse {
+	repeated Car cars = 1; 
+}
+
+service CarService {
+	rpc GetCar (FindCarByIdRequest) returns (CarResponse);
+}
