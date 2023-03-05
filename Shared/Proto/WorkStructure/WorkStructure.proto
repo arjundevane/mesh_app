@@ -6,9 +6,11 @@ option csharp_namespace = "MeshApp.WorkStructure";
 
 message WorkerMessageBase {
 	// This should refer to the Proto message name, which will be same as the c# generated DTO name.
+	// Example: MeshApp.Proto.CarResponse
 	string message_type_name = 1;
 
 	// Raw proto is loaded here, decode into a concrete proto type before using.
+	// Use the message_type_name for the exact class type with namespace.
 	google.protobuf.Any base_message = 100;
 }
 
@@ -22,8 +24,35 @@ message WorkResponse {
 	WorkerMessageBase message = 1002;
 }
 
+// To be implemented by the Worker Instance
 service Worker {
 	rpc PerformIntendedWork (WorkRequest) returns (WorkResponse);
+}
+
+message IntentMap {
+	map <string, ProcessStepInfo> intents = 1;
+}
+
+message WorkerInfo {
+	string worker_id = 1;
+	string rpc_url = 2;
+	string registration_key = 3;
+}
+
+message UnRegisterInfo {
+	bool can_unregister = 1;
+}
+
+// To be implemented by Work Orchestrator
+service WorkRegistration {
+	rpc RegisterWorker (WorkerInfo) returns (IntentMap);
+	rpc UnRegisterWorker (WorkerInfo) returns (UnRegisterInfo);
+}
+
+// To be implemented by Work Orchestrator
+// Clients are Ingress 
+service WorkQueueing {
+	rpc QueueWork (WorkRequest) returns (WorkResponse);
 }
 
 message ProcessStepInfo {

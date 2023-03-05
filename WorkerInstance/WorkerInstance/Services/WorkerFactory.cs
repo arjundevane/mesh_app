@@ -3,7 +3,7 @@ using MeshApp.WorkStructure;
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace WorkOrchestrator.Services
+namespace WorkerInstance.Services
 {
     public static class AssemblyCache
     {

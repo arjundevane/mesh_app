@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using MeshApp.WorkOrchestrator.Services;
+using MeshApp.WorkOrchestrator.Statics;
+using MeshApp.WorkStructure;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MeshApp.WorkOrchestrator
@@ -13,9 +16,11 @@ namespace MeshApp.WorkOrchestrator
 
             var app = builder.Build();
 
-            app.MapGrpcService<WorkerService>();
+            app.MapGrpcService<WorkRegistrationService>();
+            app.MapGrpcService<WorkQueueingService>();
             app.MapGet("/", () => "This service only supports gRPC endpoints.");
 
+            Constants.Initialize();
             app.Run();
         }
     }

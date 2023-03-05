@@ -1,16 +1,14 @@
 ﻿using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-using MeshApp.Proto;
+using MeshApp.WorkerInstance.Statics;
 using MeshApp.WorkInterface;
 using MeshApp.WorkStructure;
 using Microsoft.Extensions.Logging;
-using System.Reflection;
 using System.Runtime.Loader;
-using WorkOrchestrator.Services;
-using WorkOrchestrator.Statics;
+using WorkerInstance.Services;
 
-namespace MeshApp.WorkOrchestrator
+namespace MeshApp.WorkerInstance
 {
     public class WorkerService : Worker.WorkerBase
     {
@@ -28,7 +26,10 @@ namespace MeshApp.WorkOrchestrator
                 var intent = request.Intent;
 
                 // Find the related assembly name for this intent
-                var processStepInfo = Constants.IntentMap[intent];
+                if (!Constants.IntentMap.Intents.ContainsKey(intent))
+                    throw new Exception($"This worker is not registered to handle the intent: [{intent}]");
+
+                var processStepInfo = Constants.IntentMap.Intents[intent];
 
                 // Load the work logic assembly
                 var assemblyLoadContext = new AssemblyLoadContext(processStepInfo.Name, isCollectible: true);
@@ -49,7 +50,7 @@ namespace MeshApp.WorkOrchestrator
                 // Processor cannot be null
                 if (logicProcessor is null)
                     throw new EntryPointNotFoundException(nameof(logicProcessor));
-                
+
                 // Extract the work request payload and convert to inputType
                 var payload = FindAndInvokeMethod(
                     concreteClass: request.Message.BaseMessage,
