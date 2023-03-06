@@ -2,7 +2,11 @@
   "profiles": {
     "WorkerInstance": {
       "commandName": "Project",
-      "commandLineArgs": "--urls \"https://[:1]:0\""
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "IsOverrideDynamicPort": "true",
+        "OverrideDynamicPort": "5101"
+      }
     }
   }
 }

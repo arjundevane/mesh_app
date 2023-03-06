@@ -1,5 +1,4 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using Grpc.Net.Client;
+﻿using Grpc.Net.Client;
 using MeshApp.WorkerInstance.Statics;
 using MeshApp.WorkStructure;
 using Microsoft.AspNetCore.Builder;
@@ -7,8 +6,6 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using WorkerInstance;
 
 namespace MeshApp.WorkerInstance
 {
@@ -16,6 +13,21 @@ namespace MeshApp.WorkerInstance
     {
         public async static Task Main(string[] args)
         {
+            if ((Environment.GetEnvironmentVariable("IsOverrideDynamicPort") ?? "false").ToLower() != "true")
+            {
+                var argsList = args.ToList();
+                argsList.Add("--urls");
+                argsList.Add("https://127.0.0.1:0");
+                args = argsList.ToArray();
+            }
+            else if (Environment.GetEnvironmentVariable("OverrideDynamicPort") != null)
+            {
+                var argsList = args.ToList();
+                argsList.Add("--urls");
+                argsList.Add($"https://127.0.0.1:{Environment.GetEnvironmentVariable("OverrideDynamicPort")}");
+                args = argsList.ToArray();
+            }
+
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddGrpc();
@@ -50,7 +62,7 @@ namespace MeshApp.WorkerInstance
                     {
                         RegistrationKey = Constants.RegistrationKey,
                         WorkerId = Constants.WorkerGuid,
-                        RpcUrl = address,
+                        RpcUrl = address.Replace("127.0.0.1", "localhost"),
                     };
 
                     var intentMap = await client.RegisterWorkerAsync(registration);
