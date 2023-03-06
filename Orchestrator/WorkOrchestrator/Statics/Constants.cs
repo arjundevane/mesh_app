@@ -1,6 +1,5 @@
 ﻿using MeshApp.Proto;
 using MeshApp.WorkStructure;
-using WorkOrchestrator.Registration;
 
 namespace MeshApp.WorkOrchestrator.Statics
 {

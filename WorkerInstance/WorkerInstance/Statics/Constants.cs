@@ -1,5 +1,4 @@
-﻿using MeshApp.Proto;
-using MeshApp.WorkStructure;
+﻿using MeshApp.WorkStructure;
 
 namespace MeshApp.WorkerInstance.Statics
 {

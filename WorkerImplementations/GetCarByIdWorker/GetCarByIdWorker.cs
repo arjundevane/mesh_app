@@ -8,8 +8,6 @@ namespace GetCarByIdWorker
     {
         public async Task<CarResponse> RunAsync(FindCarByIdRequest request)
         {
-            // TODO: Call the RPC on DataConnector
-
             using var channel = GrpcChannel.ForAddress("https://localhost:60514");
             var client = new CarService.CarServiceClient(channel);
 

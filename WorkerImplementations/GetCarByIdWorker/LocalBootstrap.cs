@@ -14,7 +14,7 @@ namespace GetCarByIdWorker
             var response = await worker.RunAsync(new FindCarByIdRequest()
             {
                 CarId = "1234"
-            }); 
+            });
 
             var typeRegistry = TypeRegistry.FromFiles(CarReflection.Descriptor);
             var protoSerializer = new Google.Protobuf.JsonFormatter(new Google.Protobuf.JsonFormatter.Settings(false, typeRegistry));

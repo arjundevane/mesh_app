@@ -1,5 +1,4 @@
 ﻿using Grpc.Core;
-using MeshApp.WorkOrchestrator.Statics;
 using MeshApp.WorkStructure;
 using Microsoft.Extensions.Logging;
 using WorkOrchestrator.Registration;
