@@ -1,11 +1,14 @@
-﻿using Grpc.Net.Client;
+﻿using Google.Protobuf.WellKnownTypes;
+using Grpc.Net.Client;
 using MeshApp.WorkerInstance.Statics;
 using MeshApp.WorkStructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net;
+using Microsoft.Extensions.Hosting;
+using System;
+using WorkerInstance;
 
 namespace MeshApp.WorkerInstance
 {
@@ -13,39 +16,49 @@ namespace MeshApp.WorkerInstance
     {
         public async static Task Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder();
+            var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddGrpc();
 
             var app = builder.Build();
-
             app.MapGrpcService<WorkerService>();
             app.MapGet("/", () => "This service only supports gRPC endpoints.");
 
-            var url = "https://localhost:5101";
-            Constants.IntentMap = await RegisterSelf(url);
+            app.Start();
 
-            app.Run(url);
+            Constants.IntentMap = await RegisterSelf(app);
+
+            await app.WaitForShutdownAsync();
         }
 
-        public async static Task<IntentMap> RegisterSelf(string url)
+        private async static Task<IntentMap> RegisterSelf(WebApplication app)
         {
             try
             {
-                using var channel = GrpcChannel.ForAddress(Constants.OrchestratorUrl);
-                var client = new WorkRegistration.WorkRegistrationClient(channel);
+                var server = app.Services.GetRequiredService<IServer>();
+                var addressFeature = server.Features.Get<IServerAddressesFeature>();
 
-                var registration = new WorkerInfo
+                foreach (var address in addressFeature.Addresses)
                 {
-                    RegistrationKey = Constants.RegistrationKey,
-                    WorkerId = Constants.WorkerGuid,
-                    RpcUrl = url,
-                };
+                    if (!address.Contains("https"))
+                        continue;
 
-                var intentMap = await client.RegisterWorkerAsync(registration);
-                return intentMap;
+                    using var channel = GrpcChannel.ForAddress(Constants.OrchestratorUrl);
+                    var client = new WorkRegistration.WorkRegistrationClient(channel);
+
+                    var registration = new WorkerInfo
+                    {
+                        RegistrationKey = Constants.RegistrationKey,
+                        WorkerId = Constants.WorkerGuid,
+                        RpcUrl = address,
+                    };
+
+                    var intentMap = await client.RegisterWorkerAsync(registration);
+                    return intentMap;
+                }
+                throw new ApplicationException("No HTTPS address found for the current service. Cannot register with Orchestrator.");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new ApplicationException("Unable to register with orchestrator using any address.", ex);
             }

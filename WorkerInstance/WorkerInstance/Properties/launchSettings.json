@@ -1,7 +1,8 @@
 {
   "profiles": {
     "WorkerInstance": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "--urls \"https://[:1]:0\""
     }
   }
 }
