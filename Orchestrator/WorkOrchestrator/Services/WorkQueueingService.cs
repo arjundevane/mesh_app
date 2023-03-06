@@ -18,8 +18,8 @@ namespace MeshApp.WorkOrchestrator.Services
         {
             try
             {
-                // Get random worker
-                var workerChannel = Constants.Registrations.GetRandomWorkerChannel();
+                // Get random alive worker
+                var workerChannel = await Constants.Registrations.GetRandomWorkerChannel();
 
                 if (workerChannel == null)
                     throw new Exception("Could not find any available worker channels.");

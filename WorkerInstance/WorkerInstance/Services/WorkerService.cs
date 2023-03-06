@@ -6,7 +6,7 @@ using MeshApp.WorkInterface;
 using MeshApp.WorkStructure;
 using Microsoft.Extensions.Logging;
 using System.Runtime.Loader;
-using WorkerInstance.Services;
+using WorkerInstance.AssemblyLoader;
 
 namespace MeshApp.WorkerInstance
 {
@@ -17,6 +17,14 @@ namespace MeshApp.WorkerInstance
         public WorkerService(ILogger<WorkerService> logger)
         {
             _logger = logger;
+        }
+
+        public override Task<Echo> HeartBeat(Echo request, ServerCallContext context)
+        {
+            return Task.FromResult(new Echo
+            {
+                Message = $"Ack: {request.Message}"
+            });
         }
 
         public async override Task<WorkResponse> PerformIntendedWork(WorkRequest request, ServerCallContext context)

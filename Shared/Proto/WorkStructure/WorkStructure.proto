@@ -24,8 +24,13 @@ message WorkResponse {
 	WorkerMessageBase message = 1002;
 }
 
+message Echo {
+	string message = 1;
+}
+
 // To be implemented by the Worker Instance
 service Worker {
+	rpc HeartBeat (Echo) returns (Echo);
 	rpc PerformIntendedWork (WorkRequest) returns (WorkResponse);
 }
 

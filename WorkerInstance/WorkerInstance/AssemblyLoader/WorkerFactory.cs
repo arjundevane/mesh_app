@@ -3,7 +3,7 @@ using MeshApp.WorkStructure;
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace WorkerInstance.Services
+namespace WorkerInstance.AssemblyLoader
 {
     public static class AssemblyCache
     {
@@ -27,14 +27,14 @@ namespace WorkerInstance.Services
             if (assemblyType == null)
                 throw new Exception($"Worker assembly with name {info.Name} not found!");
 
-            Console.WriteLine($"Found starter assembly ==> {assembly.FullName}");
+            //Console.WriteLine($"Found starter assembly ==> {assembly.FullName}");
 
             // Find and load referenced modules
             var requiredAssembiles = assembly.GetReferencedAssemblies();
-            foreach (var requiredAssembly in requiredAssembiles)
-            {
-                Console.WriteLine($"Required Assembly ==> {requiredAssembly.FullName}");
-            }
+            //foreach (var requiredAssembly in requiredAssembiles)
+            //{
+            //    Console.WriteLine($"Required Assembly ==> {requiredAssembly.FullName}");
+            //}
 
             // Build object and invoke
             var ctor = assemblyType.GetConstructors();
