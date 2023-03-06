@@ -4,7 +4,7 @@
       "commandName": "Project",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "IsOverrideDynamicPort": "true",
+        "IsOverrideDynamicPort": "false",
         "OverrideDynamicPort": "5101"
       }
     }
