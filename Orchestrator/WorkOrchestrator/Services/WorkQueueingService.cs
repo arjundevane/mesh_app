@@ -2,16 +2,19 @@
 using MeshApp.WorkOrchestrator.Statics;
 using MeshApp.WorkStructure;
 using Microsoft.Extensions.Logging;
+using WorkOrchestrator.Registration;
 
 namespace MeshApp.WorkOrchestrator.Services
 {
     public class WorkQueueingService : WorkQueueing.WorkQueueingBase
     {
         private readonly ILogger<WorkQueueingService> _logger;
+        private readonly IRegistration _registration;
 
-        public WorkQueueingService(ILogger<WorkQueueingService> logger)
+        public WorkQueueingService(ILogger<WorkQueueingService> logger, IRegistration registration)
         {
             _logger = logger;
+            _registration = registration ?? throw new ArgumentNullException(nameof(IRegistration));
         }
 
         public async override Task<WorkResponse> QueueWork(WorkRequest request, ServerCallContext context)
@@ -19,7 +22,7 @@ namespace MeshApp.WorkOrchestrator.Services
             try
             {
                 // Get random alive worker
-                var workerChannel = await Constants.Registrations.GetRandomWorkerChannel();
+                var workerChannel = await _registration.GetRandomWorkerChannelAsync();
 
                 if (workerChannel == null)
                     throw new Exception("Could not find any available worker channels.");

@@ -1,8 +1,8 @@
 ﻿using MeshApp.WorkOrchestrator.Services;
 using MeshApp.WorkOrchestrator.Statics;
-using MeshApp.WorkStructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using WorkOrchestrator.Registration;
 
 namespace MeshApp.WorkOrchestrator
 {
@@ -13,6 +13,7 @@ namespace MeshApp.WorkOrchestrator
             var builder = WebApplication.CreateBuilder();
 
             builder.Services.AddGrpc();
+            builder.Services.AddSingleton<IRegistration, Registrations>();
 
             var app = builder.Build();
 

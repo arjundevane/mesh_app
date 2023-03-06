@@ -14,8 +14,6 @@ namespace MeshApp.WorkOrchestrator.Statics
         // TODO: This should be loaded from a config Url and cached
         public static IntentMap IntentMap = new();
 
-        public static Registrations Registrations = new();
-
         public enum IntentNames
         {
             GetCarById = 1,
@@ -33,8 +31,6 @@ namespace MeshApp.WorkOrchestrator.Statics
                 RequestType = typeof(FindCarByIdRequest).AssemblyQualifiedName,
                 ResponseType = typeof(CarResponse).AssemblyQualifiedName
             });
-
-            Registrations = new Registrations();
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Grpc.Net.Client;
 using MeshApp.WorkStructure;
-using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 
 namespace WorkOrchestrator.Registration
@@ -11,7 +10,7 @@ namespace WorkOrchestrator.Registration
         public GrpcChannel Channel;
     }
 
-    public class Registrations
+    public class Registrations : IRegistration
     {
         public readonly ConcurrentDictionary<string, WorkerRegistration> _registrations;
 
@@ -20,7 +19,7 @@ namespace WorkOrchestrator.Registration
             _registrations = new ConcurrentDictionary<string, WorkerRegistration>();
         }
 
-        public async Task<GrpcChannel?> GetRandomWorkerChannel()
+        public async Task<GrpcChannel?> GetRandomWorkerChannelAsync()
         {
             if (_registrations.Count == 0)
                 return null;
