@@ -18,15 +18,48 @@ message Car {
 	}
 }
 
-message FindCarByIdRequest {
-	optional string car_id = 1;
+// Common responses
+message CarResponse {
+	Car car = 1;
+	optional Error error = 2;
 }
 
-message CarResponse {
+message CarsResponse {
 	repeated Car cars = 1;
 	optional Error error = 2;
 }
 
+// Implemented by the Data connector
+message FindCarByIdRequest {
+	optional string car_id = 1;
+}
+
+// Implemented by the Data connector
+message FindCarsByMakeRequest {
+	optional string make = 1;
+}
+
+// Implemented by the Data connector
+message AddCarRequest {
+	Car add_car = 1;
+}
+
+// Implemented by the Worker logic
+message GetCarEfficiencyByMakeRequest {
+	optional string make = 1;
+}
+message GetCarEfficiencyByMakeResponse {
+	string make = 1;
+	repeated Efficiency efficiencies = 2;
+
+	message Efficiency {
+		double horsepower_per_cc_displacement = 1001;
+	}
+}
+
 service CarService {
-	rpc GetCar (FindCarByIdRequest) returns (CarResponse);
+	rpc FindCarsById (FindCarByIdRequest) returns (CarsResponse);
+	rpc FindCarsByMake (FindCarsByMakeRequest) returns (CarsResponse);
+	rpc AddCar (AddCarRequest) returns (CarResponse);
+	rpc GetCarEfficiencyByMake (GetCarEfficiencyByMakeRequest) returns (GetCarEfficiencyByMakeResponse);
 }
