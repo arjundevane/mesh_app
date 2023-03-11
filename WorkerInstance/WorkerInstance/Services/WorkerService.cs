@@ -23,7 +23,7 @@ namespace MeshApp.WorkerInstance
         {
             return Task.FromResult(new Echo
             {
-                Message = $"Ack: {request.Message}"
+                Message = $"{nameof(WorkerInstance)} Ack: {request.Message}"
             });
         }
 
@@ -93,8 +93,16 @@ namespace MeshApp.WorkerInstance
             }
             catch (Exception ex)
             {
-                Console.Write(ex.ToString());
-                throw;
+                _logger.LogError(ex, $"{nameof(WorkerInstance)} Error while processing request: {ex.Message}");
+                return new WorkResponse
+                {
+                    Error = new Error.Error
+                    {
+                        ErrorCode = Error.ErrorCode.InternalError,
+                        ErrorMessage = ex.Message,
+                        StackTrace = ex.StackTrace
+                    }
+                };
             }
         }
 
@@ -120,22 +128,22 @@ namespace MeshApp.WorkerInstance
         }
 
         private async Task<object?> FindAndInvokeMethodAsync(object concreteClass, string methodName, System.Type[]? genericArgumentTypes, object[] methodArguments, System.Type responseType)
-        {
-            var methodInfo = concreteClass.GetType().GetMethod(methodName);
-            if (methodInfo is null)
-                throw new MissingMethodException(methodName);
+    {
+        var methodInfo = concreteClass.GetType().GetMethod(methodName);
+        if (methodInfo is null)
+            throw new MissingMethodException(methodName);
 
-            var concreteMethodInfo = (genericArgumentTypes != null && genericArgumentTypes.Length > 0)
-                ? methodInfo.MakeGenericMethod(genericArgumentTypes)
-                : methodInfo;
+        var concreteMethodInfo = (genericArgumentTypes != null && genericArgumentTypes.Length > 0)
+            ? methodInfo.MakeGenericMethod(genericArgumentTypes)
+            : methodInfo;
 
-            var methodOutput = (Task?)concreteMethodInfo?.Invoke(concreteClass, methodArguments);
-            if (methodOutput == null)
-                return default;
+        var methodOutput = (Task?)concreteMethodInfo?.Invoke(concreteClass, methodArguments);
+        if (methodOutput == null)
+            return default;
 
-            await methodOutput.ConfigureAwait(false);
-            var resultProperty = methodOutput.GetType().GetProperty("Result");
-            return resultProperty?.GetValue(methodOutput);
-        }
+        await methodOutput.ConfigureAwait(false);
+        var resultProperty = methodOutput.GetType().GetProperty("Result");
+        return resultProperty?.GetValue(methodOutput);
+    }
     }
 }
