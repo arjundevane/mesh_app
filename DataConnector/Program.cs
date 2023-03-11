@@ -10,6 +10,13 @@ namespace MeshApp.DataConnector
         {
             var builder = WebApplication.CreateBuilder();
 
+            // Enable IIS
+            builder.WebHost.UseIIS();
+            builder.Services.Configure<IISServerOptions>(options =>
+            {
+                options.AutomaticAuthentication = true;
+            });
+
             // Add couch DB
             builder.Services.AddCouchContext<DataConnectorContext>(builder =>
             {
@@ -32,7 +39,6 @@ namespace MeshApp.DataConnector
 
             // Add gRPC service fulfillers
             app.MapGrpcService<DataConnectorService>();
-
             app.MapControllers();
 
             app.Run();
