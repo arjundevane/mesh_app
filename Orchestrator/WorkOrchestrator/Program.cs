@@ -1,7 +1,5 @@
 ﻿using MeshApp.WorkOrchestrator.Services;
 using MeshApp.WorkOrchestrator.Statics;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using WorkOrchestrator.Registration;
 
 namespace MeshApp.WorkOrchestrator
@@ -12,14 +10,29 @@ namespace MeshApp.WorkOrchestrator
         {
             var builder = WebApplication.CreateBuilder();
 
-            builder.Services.AddGrpc();
+            // Enable IIS
+            builder.WebHost.UseIIS();
+            builder.Services.Configure<IISServerOptions>(options =>
+            {
+                options.AutomaticAuthentication = true;
+            });
+
             builder.Services.AddSingleton<IRegistration, Registrations>();
+
+            // Setup gRPC
+            builder.Services.AddGrpc(configureOptions =>
+            {
+                configureOptions.EnableDetailedErrors = true;
+            });
+
+            builder.Services.AddControllers();
 
             var app = builder.Build();
 
+            // Add gRPC service fulfillers
             app.MapGrpcService<WorkRegistrationService>();
             app.MapGrpcService<WorkQueueingService>();
-            app.MapGet("/", () => "This service only supports gRPC endpoints.");
+            app.MapControllers();
 
             Constants.Initialize();
             app.Run();

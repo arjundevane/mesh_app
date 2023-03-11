@@ -1,7 +1,6 @@
 ﻿using Grpc.Core;
 using MeshApp.WorkOrchestrator.Statics;
 using MeshApp.WorkStructure;
-using Microsoft.Extensions.Logging;
 using WorkOrchestrator.Registration;
 
 namespace MeshApp.WorkOrchestrator.Services
@@ -37,6 +36,14 @@ namespace MeshApp.WorkOrchestrator.Services
                 _logger.LogError(e, $"Error occured while registaring worker with info {request}. Error: {e.Message}");
                 throw;
             }
+        }
+
+        public override Task<Echo> HeartBeat(Echo request, ServerCallContext context)
+        {
+            return Task.FromResult(new Echo
+            {
+                Message = $"{nameof(WorkOrchestrator)} Ack: {request.Message}"
+            });
         }
     }
 }

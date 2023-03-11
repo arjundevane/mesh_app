@@ -26,7 +26,6 @@ namespace MeshApp.DataConnector
                     .UseBasicAuthentication("admin", "admin");
             });
 
-            // Add services to the container.
             builder.Services.AddControllers();
 
             // Setup gRPC

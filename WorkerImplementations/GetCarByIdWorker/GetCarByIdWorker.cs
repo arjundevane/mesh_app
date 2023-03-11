@@ -8,7 +8,7 @@ namespace GetCarByIdWorker
     {
         public async Task<CarResponse> RunAsync(FindCarByIdRequest request)
         {
-            using var channel = GrpcChannel.ForAddress("https://localhost:60514");
+            using var channel = GrpcChannel.ForAddress("https://localhost:6001");
             var client = new CarService.CarServiceClient(channel);
 
             var message = new FindCarByIdRequest()

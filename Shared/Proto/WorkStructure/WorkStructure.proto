@@ -50,6 +50,7 @@ message UnRegisterInfo {
 
 // To be implemented by Work Orchestrator
 service WorkRegistration {
+	rpc HeartBeat (Echo) returns (Echo);
 	rpc RegisterWorker (WorkerInfo) returns (IntentMap);
 	rpc UnRegisterWorker (WorkerInfo) returns (UnRegisterInfo);
 }
