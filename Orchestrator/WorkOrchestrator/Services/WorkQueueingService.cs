@@ -1,6 +1,5 @@
 ﻿using Grpc.Core;
 using MeshApp.WorkStructure;
-using Microsoft.Extensions.Logging;
 using WorkOrchestrator.Registration;
 
 namespace MeshApp.WorkOrchestrator.Services
@@ -36,7 +35,15 @@ namespace MeshApp.WorkOrchestrator.Services
             catch (Exception e)
             {
                 _logger.LogError(e, $"Error occured while performing work: {e.Message}");
-                throw;
+                return new WorkResponse
+                {
+                    Error = new Error.Error
+                    {
+                        ErrorCode = Error.ErrorCode.InternalError,
+                        ErrorMessage = e.Message,
+                        StackTrace = e.StackTrace
+                    }
+                };
             }
         }
     }

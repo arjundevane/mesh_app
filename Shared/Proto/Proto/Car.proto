@@ -1,5 +1,7 @@
 ﻿syntax="proto3";
 
+import "Error/Error.proto";
+
 option csharp_namespace = "MeshApp.Proto";
 
 message Car {
@@ -21,7 +23,8 @@ message FindCarByIdRequest {
 }
 
 message CarResponse {
-	repeated Car cars = 1; 
+	repeated Car cars = 1;
+	optional Error error = 2;
 }
 
 service CarService {

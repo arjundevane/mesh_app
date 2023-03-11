@@ -1,6 +1,7 @@
 ﻿syntax="proto3";
 
 import "google/protobuf/any.proto";
+import "Error/Error.proto";
 
 option csharp_namespace = "MeshApp.WorkStructure";
 
@@ -22,6 +23,7 @@ message WorkRequest {
 message WorkResponse {
 	string finished_intent = 1001;
 	WorkerMessageBase message = 1002;
+	Error error = 1003;
 }
 
 message Echo {

@@ -1,6 +1,7 @@
 ﻿using CouchDB.Driver.Extensions;
 using Grpc.Core;
 using MeshApp.DataConnector.DbContext;
+using MeshApp.Error;
 using MeshApp.Proto;
 
 namespace DataConnector.Services
@@ -18,14 +19,29 @@ namespace DataConnector.Services
 
         public async override Task<CarResponse> GetCar(FindCarByIdRequest request, ServerCallContext context)
         {
-            var cars = await _context.Cars
+            try
+            {
+                var cars = await _context.Cars
                 .Where(c => c.Car.CarId == request.CarId)
                 .ToListAsync();
 
-            var response = new CarResponse();
-            response.Cars.AddRange(cars.Select(c => c.Car));
+                var response = new CarResponse();
+                response.Cars.AddRange(cars.Select(c => c.Car));
 
-            return response;
+                return response;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Detected error while processing: {request}");
+                return new CarResponse
+                {
+                    Error = new Error
+                    {
+                        ErrorMessage = ex.Message,
+                        StackTrace = ex.StackTrace
+                    }
+                };
+            }
         }
     }
 }

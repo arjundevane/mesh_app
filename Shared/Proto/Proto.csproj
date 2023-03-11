@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Error.proto" />
     <None Remove="WorkStructure\WorkStructure.proto" />
   </ItemGroup>
 
@@ -17,6 +18,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <Protobuf Include="Error\Error.proto" />
 	  <Protobuf Include="Proto\Car.proto" />
 	  <Protobuf Include="WorkStructure\WorkStructure.proto" />
   </ItemGroup>
