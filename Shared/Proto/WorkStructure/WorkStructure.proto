@@ -83,13 +83,13 @@ message ProcessStepInfo {
 
 message WorkflowRequest {
 	string requested_workflow_name = 1001;
-	WorkerMessageBase request_payload = 1002;
+	WorkRequest first_request_payload = 1002;
 }
 
 message WorkflowResponse {
 	repeated WorkRequest work_requests = 1001;
 	repeated WorkResponse work_responses = 1002;
-	WorkerMessageBase response_payload = 1005;
+	WorkResponse final_response_payload = 1005;
 	Error error = 1010;
 }
 

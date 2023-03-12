@@ -65,3 +65,13 @@ service CarService {
 	rpc AddCar (AddCarRequest) returns (CarResponse);
 	rpc GetCarEfficiencyByMake (GetCarEfficiencyByMakeRequest) returns (GetCarEfficiencyByMakeResponse);
 }
+
+// Workflow types
+// These are not implemented by a single worker or data connector
+// But the output is compiled by chaining together multipler workers
+message FindMostEfficientCarByMakeRequest {
+	string make = 1;
+}
+message FindMostEfficientCarByMakeResponse {
+	Car most_efficient_car = 1;
+}
