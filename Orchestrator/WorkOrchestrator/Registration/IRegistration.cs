@@ -7,5 +7,6 @@ namespace WorkOrchestrator.Registration
     {
         public Task<GrpcChannel?> GetRandomWorkerChannelAsync();
         public void RegisterWorker(WorkerInfo info);
+        public void UnRegisterWorker(WorkerInfo info);
     }
 }

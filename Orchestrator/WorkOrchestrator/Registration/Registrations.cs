@@ -13,10 +13,12 @@ namespace WorkOrchestrator.Registration
     public class Registrations : IRegistration
     {
         public readonly ConcurrentDictionary<string, WorkerRegistration> _registrations;
+        public readonly ILogger<Registrations> _logger;
 
-        public Registrations()
+        public Registrations(ILogger<Registrations> logger)
         {
             _registrations = new ConcurrentDictionary<string, WorkerRegistration>();
+            _logger = logger;
         }
 
         public async Task<GrpcChannel?> GetRandomWorkerChannelAsync()
@@ -48,7 +50,7 @@ namespace WorkOrchestrator.Registration
                 {
                     // The worker has most likely shutdown, remove it from registrations.
                     _registrations.Remove(currentWorkerId, out var removedRegistration);
-                    Console.WriteLine($"Worker not found with Id [{currentWorkerId}]. Removing it from registration. Exception: {e.Message}");
+                    _logger.LogWarning($"Worker not found with Id [{currentWorkerId}]. Removing it from registration. Exception: {e.Message}");
                 }
             } while (retryCounter < _registrations.Count);
 
@@ -63,6 +65,14 @@ namespace WorkOrchestrator.Registration
                 WorkerInfo = info
             };
             _registrations[info.WorkerId] = workRegistration;
+        }
+
+        public void UnRegisterWorker(WorkerInfo info)
+        {
+            if (_registrations.ContainsKey(info.WorkerId))
+            {
+                _registrations.Remove(info.WorkerId, out var removedRegistration);
+            }
         }
     }
 }

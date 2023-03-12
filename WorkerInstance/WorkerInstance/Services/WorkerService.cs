@@ -33,6 +33,8 @@ namespace MeshApp.WorkerInstance
             {
                 var intent = request.Intent;
 
+                _logger.LogInformation($"Received intent: {intent}");
+
                 // Find the related assembly name for this intent
                 if (!Constants.IntentMap.Intents.ContainsKey(intent))
                     throw new Exception($"This worker is not registered to handle the intent: [{intent}]");
@@ -89,6 +91,8 @@ namespace MeshApp.WorkerInstance
                         BaseMessage = Any.Pack(output)
                     }
                 };
+
+                _logger.LogInformation($"Completed intent: {intent}");
                 return workResponse;
             }
             catch (Exception ex)
