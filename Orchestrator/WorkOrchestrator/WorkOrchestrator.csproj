@@ -21,4 +21,10 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="logs\dummy.log">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
