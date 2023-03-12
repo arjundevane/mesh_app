@@ -1,5 +1,6 @@
 ﻿using MeshApp.WorkOrchestrator.Services;
 using MeshApp.WorkOrchestrator.Statics;
+using WorkOrchestrator.HostedServicePipeline;
 using WorkOrchestrator.Registration;
 
 namespace MeshApp.WorkOrchestrator
@@ -26,13 +27,13 @@ namespace MeshApp.WorkOrchestrator
             });
 
             builder.Services.AddControllers();
+            builder.Services.AddHostedService<TimerWrapper>();
 
             var app = builder.Build();
 
             // Add gRPC service fulfillers
             app.MapGrpcService<WorkRegistrationService>();
             app.MapGrpcService<WorkOrchestrationService>();
-            app.MapControllers();
 
             Constants.Initialize();
             app.Run();
