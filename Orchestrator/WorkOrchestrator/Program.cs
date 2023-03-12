@@ -31,7 +31,7 @@ namespace MeshApp.WorkOrchestrator
 
             // Add gRPC service fulfillers
             app.MapGrpcService<WorkRegistrationService>();
-            app.MapGrpcService<WorkQueueingService>();
+            app.MapGrpcService<WorkOrchestrationService>();
             app.MapControllers();
 
             Constants.Initialize();

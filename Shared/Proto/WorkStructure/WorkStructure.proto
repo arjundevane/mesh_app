@@ -51,6 +51,7 @@ message UnRegisterInfo {
 }
 
 // To be implemented by Work Orchestrator
+// Clients are individual worker instances
 service WorkRegistration {
 	rpc HeartBeat (Echo) returns (Echo);
 	rpc RegisterWorker (WorkerInfo) returns (IntentMap);
@@ -58,9 +59,11 @@ service WorkRegistration {
 }
 
 // To be implemented by Work Orchestrator
-// Clients are Ingress 
-service WorkQueueing {
-	rpc QueueWork (WorkRequest) returns (WorkResponse);
+// Clients for this service are the Ingress nodes
+service WorkOrchestration {
+	rpc HeartBeat (Echo) returns (Echo);
+	rpc InvokeIntent (WorkRequest) returns (WorkResponse); // Single intent
+	rpc InvokeWorkflow (WorkflowRequest) returns (WorkflowResponse); // Chained/Complex intent flows
 }
 
 message ProcessStepInfo {
@@ -75,5 +78,32 @@ message ProcessStepInfo {
 		C_SHARP = 1;
 		JAVA = 2;
 		NODE = 3;
+	}
+}
+
+message WorkflowRequest {
+	string requested_workflow_name = 1001;
+	WorkerMessageBase request_payload = 1002;
+}
+
+message WorkflowResponse {
+	repeated WorkRequest work_requests = 1001;
+	repeated WorkResponse work_responses = 1002;
+	WorkerMessageBase response_payload = 1005;
+	Error error = 1010;
+}
+
+message Workflow {
+	string workflow_id = 1;
+	string workflow_name = 2;
+	repeated WorkflowStep workflow_steps = 3;
+}
+
+message WorkflowStep {
+	string step_id = 1;
+	string step_name = 2;
+	oneof step_container {
+		ProcessStepInfo single_step = 1001;
+		// TODO: Add mechanism for loops and parallel steps
 	}
 }

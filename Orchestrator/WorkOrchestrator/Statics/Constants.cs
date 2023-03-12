@@ -13,10 +13,13 @@ namespace MeshApp.WorkOrchestrator.Statics
         // TODO: This should be loaded from a config Url and cached
         public static IntentMap IntentMap = new();
 
+        public static Dictionary<string, Workflow> Workflows = new Dictionary<string, Workflow>();
+
         public enum IntentNames
         {
             GetCarById = 1,
-            GetCarByName = 2,
+            GetCarsByMake = 2,
+            FindEfficientCar = 3
         }
 
         public static void Initialize()
@@ -28,8 +31,26 @@ namespace MeshApp.WorkOrchestrator.Statics
                 CodeType = ProcessStepInfo.Types.CodeType.CSharp,
                 FilePath = "C:\\Users\\arjun\\Desktop\\Mesh\\Full Implementation\\WorkerImplementations\\GetCarByIdWorker\\bin\\Debug\\net6.0\\GetCarByIdWorker.dll",
                 RequestType = typeof(FindCarByIdRequest).AssemblyQualifiedName,
-                ResponseType = typeof(CarResponse).AssemblyQualifiedName
+                ResponseType = typeof(CarsResponse).AssemblyQualifiedName
             });
+            IntentMap.Intents.Add(IntentNames.GetCarsByMake.ToString(), new ProcessStepInfo
+            {
+                Name = "GetCarsByMakeWorker",
+                CodeType = ProcessStepInfo.Types.CodeType.CSharp,
+                FilePath = "C:\\Users\\arjun\\Desktop\\Mesh\\Full Implementation\\WorkerImplementations\\GetCarsByMakeWorker\\bin\\Debug\\net6.0\\GetCarsByMakeWorker.dll",
+                RequestType = typeof(FindCarsByMakeRequest).AssemblyQualifiedName,
+                ResponseType = typeof(CarsResponse).AssemblyQualifiedName
+            });
+            IntentMap.Intents.Add(IntentNames.FindEfficientCar.ToString(), new ProcessStepInfo
+            {
+                Name = "FindEfficientCarWorker",
+                CodeType = ProcessStepInfo.Types.CodeType.CSharp,
+                FilePath = "C:\\Users\\arjun\\Desktop\\Mesh\\Full Implementation\\WorkerImplementations\\FindEfficientCarWorker\\bin\\Debug\\net6.0\\FindEfficientCarWorker.dll",
+                RequestType = typeof(GetCarEfficiencyByMakeRequest).AssemblyQualifiedName,
+                ResponseType = typeof(GetCarEfficiencyByMakeResponse).AssemblyQualifiedName
+            });
+
+            Workflows.Clear();
         }
     }
 }

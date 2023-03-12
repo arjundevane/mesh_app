@@ -42,7 +42,7 @@ namespace MeshApp.WorkOrchestrator.Services
         {
             return Task.FromResult(new Echo
             {
-                Message = $"{nameof(WorkOrchestrator)} Ack: {request.Message}"
+                Message = $"{nameof(WorkOrchestrator)}.{nameof(WorkRegistrationService)} Ack: {request.Message}"
             });
         }
     }

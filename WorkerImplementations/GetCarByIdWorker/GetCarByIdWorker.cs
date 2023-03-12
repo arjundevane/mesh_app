@@ -4,9 +4,9 @@ using MeshApp.WorkInterface;
 
 namespace GetCarByIdWorker
 {
-    public class GetCarByIdWorker : IWorker<FindCarByIdRequest, CarResponse>
+    public class GetCarByIdWorker : IWorker<FindCarByIdRequest, CarsResponse>
     {
-        public async Task<CarResponse> RunAsync(FindCarByIdRequest request)
+        public async Task<CarsResponse> RunAsync(FindCarByIdRequest request)
         {
             using var channel = GrpcChannel.ForAddress("https://localhost:6001");
             var client = new CarService.CarServiceClient(channel);
@@ -16,7 +16,7 @@ namespace GetCarByIdWorker
                 CarId = request.CarId
             };
 
-            var reply = await client.GetCarAsync(message);
+            var reply = await client.FindCarsByIdAsync(message);
 
             return reply;
         }

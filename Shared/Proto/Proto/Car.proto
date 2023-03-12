@@ -44,7 +44,8 @@ message AddCarRequest {
 	Car add_car = 1;
 }
 
-// Implemented by the Worker logic
+// Implemented by the Worker logic by combining the FindCarsByMakeRequest
+// And then calculating the most efficiencies for each car
 message GetCarEfficiencyByMakeRequest {
 	optional string make = 1;
 }
@@ -53,7 +54,8 @@ message GetCarEfficiencyByMakeResponse {
 	repeated Efficiency efficiencies = 2;
 
 	message Efficiency {
-		double horsepower_per_cc_displacement = 1001;
+		Car car = 1001;
+		double horsepower_per_cc_displacement = 1002;
 	}
 }
 
