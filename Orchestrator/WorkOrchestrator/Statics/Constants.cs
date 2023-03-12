@@ -5,11 +5,6 @@ namespace MeshApp.WorkOrchestrator.Statics
 {
     public static class Constants
     {
-        public static string[] RegistrationKeys = new[]
-        {
-            "C4383160-1D18-4477-9865-4ED99A4B7B3A"
-        };
-
         // TODO: This should be loaded from a config Url and cached
         public static IntentMap IntentMap = new();
 
@@ -92,5 +87,10 @@ namespace MeshApp.WorkOrchestrator.Statics
 
             Workflows.Add(nameof(FindMostEfficientCarByMakeWorkflow), FindMostEfficientCarByMakeWorkflow);
         }
+    }
+
+    public static class Keys
+    {
+        public const string RegistrationKeysList = nameof(RegistrationKeysList);
     }
 }
