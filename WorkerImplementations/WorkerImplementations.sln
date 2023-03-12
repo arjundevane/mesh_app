@@ -9,6 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindEfficientCarWorker", "F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetCarsByMakeWorker", "GetCarsByMakeWorker\GetCarsByMakeWorker.csproj", "{2122D9E0-4221-4F81-B01B-807D30393300}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FindMostEfficientCarByMakeEndWorker", "FindMostEfficientInEachMakeWorker\FindMostEfficientCarByMakeEndWorker.csproj", "{AD09CA9B-93E5-4D56-9863-0546B098AF5C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FindMostEfficientCarByMakeStartWorker", "FindMostEfficientCarByMakeStartWorker\FindMostEfficientCarByMakeStartWorker.csproj", "{7EE8DD0F-A44F-4FF4-B4CD-AAADC1BE1B42}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{2122D9E0-4221-4F81-B01B-807D30393300}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2122D9E0-4221-4F81-B01B-807D30393300}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2122D9E0-4221-4F81-B01B-807D30393300}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD09CA9B-93E5-4D56-9863-0546B098AF5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD09CA9B-93E5-4D56-9863-0546B098AF5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD09CA9B-93E5-4D56-9863-0546B098AF5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD09CA9B-93E5-4D56-9863-0546B098AF5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EE8DD0F-A44F-4FF4-B4CD-AAADC1BE1B42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EE8DD0F-A44F-4FF4-B4CD-AAADC1BE1B42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EE8DD0F-A44F-4FF4-B4CD-AAADC1BE1B42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EE8DD0F-A44F-4FF4-B4CD-AAADC1BE1B42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
