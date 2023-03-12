@@ -3,7 +3,7 @@ using MeshApp.WorkStructure;
 using System.Collections.Concurrent;
 using System.Timers;
 
-namespace WorkOrchestrator.Registration
+namespace WorkOrchestrator.Services
 {
     public struct WorkerRegistration
     {

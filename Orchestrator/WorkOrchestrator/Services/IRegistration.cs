@@ -2,7 +2,7 @@
 using MeshApp.WorkStructure;
 using System.Timers;
 
-namespace WorkOrchestrator.Registration
+namespace WorkOrchestrator.Services
 {
     public interface IRegistration
     {

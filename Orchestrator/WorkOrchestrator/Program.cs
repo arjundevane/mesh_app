@@ -1,7 +1,7 @@
-﻿using MeshApp.WorkOrchestrator.Services;
+﻿using MeshApp.WorkOrchestrator.RpcServices;
 using MeshApp.WorkOrchestrator.Statics;
 using WorkOrchestrator.HostedServicePipeline;
-using WorkOrchestrator.Registration;
+using WorkOrchestrator.Services;
 
 namespace MeshApp.WorkOrchestrator
 {

@@ -1,4 +1,4 @@
-﻿using WorkOrchestrator.Registration;
+﻿using WorkOrchestrator.Services;
 using Timer = System.Timers.Timer;
 
 namespace WorkOrchestrator.HostedServicePipeline

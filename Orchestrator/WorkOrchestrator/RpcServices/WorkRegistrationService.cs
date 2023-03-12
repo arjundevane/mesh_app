@@ -1,9 +1,9 @@
 ﻿using Grpc.Core;
 using MeshApp.WorkOrchestrator.Statics;
 using MeshApp.WorkStructure;
-using WorkOrchestrator.Registration;
+using WorkOrchestrator.Services;
 
-namespace MeshApp.WorkOrchestrator.Services
+namespace MeshApp.WorkOrchestrator.RpcServices
 {
     public class WorkRegistrationService : WorkRegistration.WorkRegistrationBase
     {
