@@ -1,4 +1,5 @@
 ﻿using Grpc.Core;
+using MeshApp.WorkOrchestrator.Statics;
 using MeshApp.WorkStructure;
 using WorkOrchestrator.Registration;
 
@@ -55,17 +56,61 @@ namespace MeshApp.WorkOrchestrator.Services
             }
         }
 
-        /*
-        public override Task<WorkflowResponse> InvokeWorkflow(WorkflowRequest request, ServerCallContext context)
+        public override async Task<WorkflowResponse> InvokeWorkflow(WorkflowRequest request, ServerCallContext context)
         {
             try
             {
-                return Task.FromResult(new WorkflowResponse { });
+                // Chain the request and responses through the workflow intents
+                var workRequests = new List<WorkRequest>();
+                var workResponses = new List<WorkResponse>();
+
+                if (!Constants.Workflows.TryGetValue(request.RequestedWorkflowName, out var workflowDetails) || workflowDetails == null)
+                {
+                    throw new EntryPointNotFoundException($"No workflow found for name: {request.RequestedWorkflowName}");
+                }
+
+                WorkRequest? lastWorkflowStepRequest = null;
+                WorkResponse? lastWorkflowStepResponse = null;
+
+                foreach (var intentStep in workflowDetails.WorkflowSteps)
+                {
+                    if (lastWorkflowStepRequest == null)
+                    {
+                        lastWorkflowStepRequest = request.FirstRequestPayload;
+                    }
+                    else
+                    {
+                        lastWorkflowStepRequest = new WorkRequest
+                        {
+                            Intent = intentStep.StepName,
+                            Message = lastWorkflowStepResponse.Message
+                        };
+                    }
+                    lastWorkflowStepResponse = await InvokeIntent(lastWorkflowStepRequest, context);
+
+                    if (lastWorkflowStepResponse.Error != null)
+                    {
+                        throw new ApplicationException($"{nameof(InvokeWorkflow)} --> Error occured while executing step [{intentStep.StepName}]. " +
+                            $"Error: [{lastWorkflowStepResponse.Error.ErrorMessage}]");
+                    }
+
+                    workRequests.Add(lastWorkflowStepRequest);
+                    workResponses.Add(lastWorkflowStepResponse);
+                }
+
+                var finalResponse = new WorkflowResponse
+                {
+                    FinalResponsePayload = lastWorkflowStepResponse
+                };
+                finalResponse.WorkRequests.AddRange(workRequests);
+                finalResponse.WorkResponses.AddRange(workResponses);
+
+                return finalResponse;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error occured while orchestration workflow: {ex.Message}");
-                return Task.FromResult(new WorkflowResponse
+                return new WorkflowResponse
                 {
                     Error = new Error.Error
                     {
@@ -73,9 +118,8 @@ namespace MeshApp.WorkOrchestrator.Services
                         ErrorMessage = ex.Message,
                         StackTrace = ex.StackTrace
                     }
-                });
+                };
             }
         }
-        */
     }
 }
