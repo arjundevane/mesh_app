@@ -103,15 +103,15 @@ namespace WorkerInstance.AssemblyLoader
             Console.WriteLine($"In {nameof(NugetResolverAssemblyContext)} ==> {assemblyName.Name}");
 
             // Check if already loaded, this should not happen
-            if (context.Assemblies.Select(a => a.FullName).Any(a => a.Contains(assemblyName.Name)))
+            if (context.Assemblies.Select(a => a.FullName).Any(a => a.Contains(assemblyName.FullName)))
             {
                 throw new Exception("Circular reference in NugetResolverAssemblyContext");
             }
 
             // Check in global cache
-            if (AssemblyCache.GlobalCache.ContainsKey(assemblyName.Name))
+            if (AssemblyCache.GlobalCache.ContainsKey(assemblyName.FullName))
             {
-                return AssemblyCache.GlobalCache[assemblyName.Name];
+                return AssemblyCache.GlobalCache[assemblyName.FullName];
             }
 
             // Not found yet, walk through the filesystem
