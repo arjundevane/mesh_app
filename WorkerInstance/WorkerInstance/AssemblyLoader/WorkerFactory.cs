@@ -38,6 +38,8 @@ namespace WorkerInstance.AssemblyLoader
 
             // Build object and invoke
             var ctor = assemblyType.GetConstructors();
+            // !!! This breaks if there are more than one constructor in the same IWorker implementation !!!
+            // TODO - Update the IWorker to require a parameter-less constructor at compile-time
             var obj = (IWorker<TRequest, TResponse>)ctor[0].Invoke(null);
             return obj;
         }

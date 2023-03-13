@@ -19,51 +19,8 @@ namespace MeshApp.WorkOrchestrator.Statics
             FindMostEfficientCarByMakeEnd = 5
         }
 
-        public static void Initialize()
+        public static void InitializeWorkflows()
         {
-            // Build one step intents
-            IntentMap = new IntentMap();
-            IntentMap.Intents.Add(IntentNames.GetCarById.ToString(), new ProcessStepInfo
-            {
-                Name = "GetCarByIdWorker",
-                CodeType = ProcessStepInfo.Types.CodeType.CSharp,
-                FilePath = "C:\\Users\\arjun\\Desktop\\Mesh\\Full Implementation\\WorkerImplementations\\GetCarByIdWorker\\bin\\Debug\\net6.0\\GetCarByIdWorker.dll",
-                RequestType = typeof(FindCarByIdRequest).AssemblyQualifiedName,
-                ResponseType = typeof(CarsResponse).AssemblyQualifiedName
-            });
-            IntentMap.Intents.Add(IntentNames.GetCarsByMake.ToString(), new ProcessStepInfo
-            {
-                Name = "GetCarsByMakeWorker",
-                CodeType = ProcessStepInfo.Types.CodeType.CSharp,
-                FilePath = "C:\\Users\\arjun\\Desktop\\Mesh\\Full Implementation\\WorkerImplementations\\GetCarsByMakeWorker\\bin\\Debug\\net6.0\\GetCarsByMakeWorker.dll",
-                RequestType = typeof(FindCarsByMakeRequest).AssemblyQualifiedName,
-                ResponseType = typeof(CarsResponse).AssemblyQualifiedName
-            });
-            IntentMap.Intents.Add(IntentNames.FindEfficientCar.ToString(), new ProcessStepInfo
-            {
-                Name = "FindEfficientCarWorker",
-                CodeType = ProcessStepInfo.Types.CodeType.CSharp,
-                FilePath = "C:\\Users\\arjun\\Desktop\\Mesh\\Full Implementation\\WorkerImplementations\\FindEfficientCarWorker\\bin\\Debug\\net6.0\\FindEfficientCarWorker.dll",
-                RequestType = typeof(GetCarEfficiencyByMakeRequest).AssemblyQualifiedName,
-                ResponseType = typeof(GetCarEfficiencyByMakeResponse).AssemblyQualifiedName
-            });
-            IntentMap.Intents.Add(IntentNames.FindMostEfficientCarByMakeStart.ToString(), new ProcessStepInfo
-            {
-                Name = "FindMostEfficientCarByMakeStartWorker",
-                CodeType = ProcessStepInfo.Types.CodeType.CSharp,
-                FilePath = "C:\\Users\\arjun\\Desktop\\Mesh\\Full Implementation\\WorkerImplementations\\FindMostEfficientCarByMakeStartWorker\\bin\\Debug\\net6.0\\FindMostEfficientCarByMakeStartWorker.dll",
-                RequestType = typeof(FindMostEfficientCarByMakeRequest).AssemblyQualifiedName,
-                ResponseType = typeof(GetCarEfficiencyByMakeResponse).AssemblyQualifiedName
-            });
-            IntentMap.Intents.Add(IntentNames.FindMostEfficientCarByMakeEnd.ToString(), new ProcessStepInfo
-            {
-                Name = "FindMostEfficientCarByMakeEndWorker",
-                CodeType = ProcessStepInfo.Types.CodeType.CSharp,
-                FilePath = "C:\\Users\\arjun\\Desktop\\Mesh\\Full Implementation\\WorkerImplementations\\FindMostEfficientCarByMakeEndWorker\\bin\\Debug\\net6.0\\FindMostEfficientCarByMakeEndWorker.dll",
-                RequestType = typeof(GetCarEfficiencyByMakeResponse).AssemblyQualifiedName,
-                ResponseType = typeof(FindMostEfficientCarByMakeResponse).AssemblyQualifiedName
-            });
-
             // Build workflows
             Workflows.Clear();
 
@@ -92,5 +49,7 @@ namespace MeshApp.WorkOrchestrator.Statics
     public static class Keys
     {
         public const string RegistrationKeysList = nameof(RegistrationKeysList);
+        public const string FileSystemIntentResolverRoot = nameof(FileSystemIntentResolverRoot);
+        public const string FileSystemIntentResolverSearchDepth = nameof(FileSystemIntentResolverSearchDepth);
     }
 }

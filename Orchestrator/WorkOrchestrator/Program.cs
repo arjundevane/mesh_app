@@ -18,15 +18,16 @@ namespace MeshApp.WorkOrchestrator
                 options.AutomaticAuthentication = true;
             });
 
-            builder.Services.AddSingleton<IRegistration, Registrations>();
-
             // Setup gRPC
             builder.Services.AddGrpc(configureOptions =>
             {
                 configureOptions.EnableDetailedErrors = true;
             });
 
+            // Internal services
             builder.Services.AddControllers();
+            builder.Services.AddSingleton<IRegistration, Registrations>();
+            builder.Services.AddSingleton<IIntentResolverBuilder, FileSystemIntentResolverBuilder>();
             builder.Services.AddHostedService<TimerWrapper>();
 
             var app = builder.Build();
@@ -35,7 +36,6 @@ namespace MeshApp.WorkOrchestrator
             app.MapGrpcService<WorkRegistrationService>();
             app.MapGrpcService<WorkOrchestrationService>();
 
-            Constants.Initialize();
             app.Run();
         }
     }
