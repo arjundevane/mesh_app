@@ -4,6 +4,7 @@ using MeshApp.WorkInterface;
 
 namespace GetCarsByMakeWorker
 {
+    [FulfilsIntent("GetCarsByMake")]
     public class GetCarsByMakeWorker : IWorker<FindCarsByMakeRequest, CarsResponse>
     {
         public async Task<CarsResponse> RunAsync(FindCarsByMakeRequest request)

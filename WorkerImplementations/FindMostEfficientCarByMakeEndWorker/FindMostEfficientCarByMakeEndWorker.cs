@@ -3,6 +3,7 @@ using MeshApp.WorkInterface;
 
 namespace FindMostEfficientInListWorker
 {
+    [FulfilsIntent("FindMostEfficientCarByMakeEnd")]
     public class FindMostEfficientCarByMakeEndWorker : IWorker<GetCarEfficiencyByMakeResponse, FindMostEfficientCarByMakeResponse>
     {
         public Task<FindMostEfficientCarByMakeResponse> RunAsync(GetCarEfficiencyByMakeResponse request)

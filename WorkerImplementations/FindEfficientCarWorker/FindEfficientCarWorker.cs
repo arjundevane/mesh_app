@@ -6,6 +6,7 @@ using MeshApp.WorkStructure;
 
 namespace FindEfficientCarWorker
 {
+    [FulfilsIntent("FindEfficientCar")]
     public class FindEfficientCarWorker : IWorker<GetCarEfficiencyByMakeRequest, GetCarEfficiencyByMakeResponse>
     {
         public async Task<GetCarEfficiencyByMakeResponse> RunAsync(GetCarEfficiencyByMakeRequest request)

@@ -1,4 +1,5 @@
-﻿using MeshApp.WorkInterface;
+﻿using Google.Protobuf.WellKnownTypes;
+using MeshApp.WorkInterface;
 using MeshApp.WorkOrchestrator.Statics;
 using MeshApp.WorkStructure;
 using System.Reflection;
@@ -67,10 +68,11 @@ namespace WorkOrchestrator.Services
                         var name = implementedInterface.Name;
                         var assemblyName = implementedInterface.Assembly.GetName().Name;
                         var genericParams = implementedInterface.GenericTypeArguments;
-                        if (name.Contains(nameof(IWorker<string, string>)) && assemblyName == nameof(MeshApp.WorkInterface))
+                        if (name.Contains(nameof(IWorker<Any, Any>)) && assemblyName == nameof(MeshApp.WorkInterface))
                         {
                             _logger.LogInformation($"{nameof(FileSystemIntentResolverBuilder)}.{nameof(FindIntentResolvers)} found intent resolver: [{exportedType.Name}]");
-                            intentMap.Intents.Add(exportedType.Name.Replace("Worker", ""), new ProcessStepInfo
+                            var fulfilsIntentAttribute = exportedType.GetCustomAttribute<FulfilsIntentAttribute>();
+                            intentMap.Intents.Add(fulfilsIntentAttribute?.GetFulfiledIntentName() ?? exportedType.Name, new ProcessStepInfo
                             {
                                 CodeType = ProcessStepInfo.Types.CodeType.CSharp,
                                 FilePath = assembly.Location,
