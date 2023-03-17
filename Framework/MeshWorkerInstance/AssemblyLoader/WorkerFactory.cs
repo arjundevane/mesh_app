@@ -1,7 +1,6 @@
 ﻿using Google.Protobuf;
 using MeshApp.WorkStructure;
 using MeshApp.WorkStructure.Interfaces;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -61,7 +60,10 @@ namespace MeshApp.WorkerInstance.AssemblyLoader
         /// <returns></returns>
         private Assembly? AssemblyContextAssemblyResolver(AssemblyName assembly)
         {
-            return _context.Assemblies.Where(a => a.FullName == assembly.FullName).FirstOrDefault();
+            var contextAssembly = _context.Assemblies.Where(a => a.FullName == assembly.FullName).FirstOrDefault();
+            if (contextAssembly != null) return contextAssembly;
+            if (AssemblyCache.GlobalCache.ContainsKey(assembly.FullName)) return AssemblyCache.GlobalCache[assembly.FullName];
+            return null;
         }
 
         /// <summary>
