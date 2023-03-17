@@ -1,0 +1,109 @@
+﻿syntax="proto3";
+
+import "google/protobuf/any.proto";
+import "Proto/Error.proto";
+
+option csharp_namespace = "MeshApp.WorkStructure";
+
+message WorkerMessageBase {
+	// This should refer to the Proto message name, which will be same as the c# generated DTO name.
+	// Example: MeshApp.Proto.CarResponse
+	string message_type_name = 1;
+
+	// Raw proto is loaded here, decode into a concrete proto type before using.
+	// Use the message_type_name for the exact class type with namespace.
+	google.protobuf.Any base_message = 100;
+}
+
+message WorkRequest {
+	string intent = 1001;
+	WorkerMessageBase message = 1002;
+}
+
+message WorkResponse {
+	string finished_intent = 1001;
+	WorkerMessageBase message = 1002;
+	Error error = 1003;
+}
+
+message Echo {
+	string message = 1;
+}
+
+// To be implemented by the Worker Instance
+service Worker {
+	rpc HeartBeat (Echo) returns (Echo);
+	rpc PerformIntendedWork (WorkRequest) returns (WorkResponse);
+}
+
+message IntentMap {
+	map <string, ProcessStepInfo> intents = 1;
+}
+
+message WorkerInfo {
+	string worker_id = 1;
+	string rpc_url = 2;
+	string registration_key = 3;
+}
+
+message UnRegisterInfo {
+	bool can_unregister = 1;
+}
+
+// To be implemented by Work Orchestrator
+// Clients are individual worker instances
+service WorkRegistration {
+	rpc HeartBeat (Echo) returns (Echo);
+	rpc RegisterWorker (WorkerInfo) returns (IntentMap);
+	rpc UnRegisterWorker (WorkerInfo) returns (UnRegisterInfo);
+}
+
+// To be implemented by Work Orchestrator
+// Clients for this service are the Ingress nodes
+service WorkOrchestration {
+	rpc HeartBeat (Echo) returns (Echo);
+	rpc InvokeIntent (WorkRequest) returns (WorkResponse); // Single intent
+	rpc InvokeWorkflow (WorkflowRequest) returns (WorkflowResponse); // Chained/Complex intent flows
+}
+
+message ProcessStepInfo {
+	optional string name = 1;
+	optional CodeType code_type = 2;
+	optional string file_path = 3;
+	optional string request_type = 4;
+	optional string response_type = 5;
+
+	enum CodeType {
+		INVALID = 0;
+		C_SHARP = 1;
+		JAVA = 2;
+		NODE = 3;
+	}
+}
+
+message WorkflowRequest {
+	string requested_workflow_name = 1001;
+	WorkRequest first_request_payload = 1002;
+}
+
+message WorkflowResponse {
+	repeated WorkRequest work_requests = 1001;
+	repeated WorkResponse work_responses = 1002;
+	WorkResponse final_response_payload = 1005;
+	Error error = 1010;
+}
+
+message Workflow {
+	string workflow_id = 1;
+	string workflow_name = 2;
+	repeated WorkflowStep workflow_steps = 3;
+}
+
+message WorkflowStep {
+	string step_id = 1;
+	string step_name = 2;
+	oneof step_container {
+		ProcessStepInfo single_step = 1001;
+		// TODO: Add mechanism for loops and parallel steps
+	}
+}
