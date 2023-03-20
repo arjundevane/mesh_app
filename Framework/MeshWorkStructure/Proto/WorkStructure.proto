@@ -107,3 +107,33 @@ message WorkflowStep {
 		// TODO: Add mechanism for loops and parallel steps
 	}
 }
+
+service WorkflowBuilder {
+	rpc FindWorkflows(FindWorkflowsRequest) returns (FindWorkflowsResponse);
+	rpc DiscoverIntentResolvers(DiscoverIntentResolverRequest) returns (DiscoverIntentResolverResponse);
+}
+
+message FindWorkflowsRequest {
+	string search_id = 1;
+	string search_name = 2;
+}
+
+message FindWorkflowsResponse {
+	repeated Workflow workflows = 1;
+	Error error = 2;
+}
+
+message DiscoverIntentResolverRequest {
+	string search_location = 1;
+	SourceType source_type = 2;
+
+	enum SourceType {
+		FILE_SYSTEM = 0;
+		AZURE_BLOB_STORE = 1;
+	}
+}
+
+message DiscoverIntentResolverResponse {
+	IntentMap intent_map = 1;
+	Error error = 2;
+}

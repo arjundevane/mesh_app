@@ -31,14 +31,12 @@ namespace MeshApp.WorkOrchestrator.Services
             _logger.LogInformation($"{nameof(TimerTriggerBuildIntentResolvers)} started at {e.SignalTime}. Current IntentResolver count = {Constants.IntentMap.Intents.Count}");
         }
 
-        public IntentMap FindIntentResolvers()
+        public IntentMap FindIntentResolvers(string? searchLocation = null)
         {
             _logger.LogInformation($"{nameof(FileSystemIntentResolverBuilder)}.{nameof(FindIntentResolvers)} started.");
-            var rootFolder = _config[Keys.FileSystemIntentResolverRoot];
-            if (!int.TryParse(_config[Keys.FileSystemIntentResolverSearchDepth], out var searchDepth))
-                searchDepth = 3;
+            var rootFolder = searchLocation ?? _config[Keys.FileSystemIntentResolverRoot];
 
-            _logger.LogInformation($"Root: {rootFolder}. SearchDepth: {searchDepth}");
+            _logger.LogInformation($"{nameof(FileSystemIntentResolverBuilder)} Root: {rootFolder}.");
 
             // Load all distinct assemblies within the root folder
             var dllFiles = Directory

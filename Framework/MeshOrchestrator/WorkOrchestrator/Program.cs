@@ -1,4 +1,5 @@
-﻿using MeshApp.WorkOrchestrator.HostedServicePipeline;
+﻿using MeshApp.WorkOrchestrator.DbContext;
+using MeshApp.WorkOrchestrator.HostedServicePipeline;
 using MeshApp.WorkOrchestrator.RpcServices;
 using MeshApp.WorkOrchestrator.Services;
 
@@ -28,12 +29,17 @@ namespace MeshApp.WorkOrchestrator
             builder.Services.AddSingleton<IRegistration, Registrations>();
             builder.Services.AddSingleton<IIntentResolverBuilder, FileSystemIntentResolverBuilder>();
             builder.Services.AddHostedService<TimerWrapper>();
+            builder.Services.AddSingleton(services =>
+            {
+                return new WorkflowDbContext(services.GetRequiredService<IConfiguration>());
+            });
 
             var app = builder.Build();
 
             // Add gRPC service fulfillers
             app.MapGrpcService<WorkRegistrationService>();
             app.MapGrpcService<WorkOrchestrationService>();
+            app.MapGrpcService<WorkflowBuilderService>();
 
             app.Run();
         }

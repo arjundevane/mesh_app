@@ -9,15 +9,6 @@ namespace MeshApp.WorkOrchestrator.Statics
 
         public static Dictionary<string, Workflow> Workflows = new Dictionary<string, Workflow>();
 
-        public enum IntentNames
-        {
-            GetCarById = 1,
-            GetCarsByMake = 2,
-            FindEfficientCar = 3,
-            FindMostEfficientCarByMakeStart = 4,
-            FindMostEfficientCarByMakeEnd = 5
-        }
-
         public static void InitializeWorkflows()
         {
             // Build workflows
@@ -31,14 +22,14 @@ namespace MeshApp.WorkOrchestrator.Statics
             FindMostEfficientCarByMakeWorkflow.WorkflowSteps.Add(new WorkflowStep
             {
                 StepId = "06E3D5BD-4107-4CDB-AB00-2D9A304CBC64",
-                StepName = IntentNames.FindMostEfficientCarByMakeStart.ToString(),
-                SingleStep = IntentMap.Intents[IntentNames.FindMostEfficientCarByMakeStart.ToString()]
+                StepName = "FindMostEfficientCarByMakeStart",
+                SingleStep = IntentMap.Intents["FindMostEfficientCarByMakeStart"]
             });
             FindMostEfficientCarByMakeWorkflow.WorkflowSteps.Add(new WorkflowStep
             {
                 StepId = "E381D73F-C0A1-4052-BBC0-6AF64A2520A0",
-                StepName = IntentNames.FindMostEfficientCarByMakeEnd.ToString(),
-                SingleStep = IntentMap.Intents[IntentNames.FindMostEfficientCarByMakeEnd.ToString()]
+                StepName = "FindMostEfficientCarByMakeStart",
+                SingleStep = IntentMap.Intents["FindMostEfficientCarByMakeStart"]
             });
 
             Workflows.Add(nameof(FindMostEfficientCarByMakeWorkflow), FindMostEfficientCarByMakeWorkflow);
@@ -49,7 +40,9 @@ namespace MeshApp.WorkOrchestrator.Statics
     {
         public const string RegistrationKeysList = nameof(RegistrationKeysList);
         public const string FileSystemIntentResolverRoot = nameof(FileSystemIntentResolverRoot);
-        public const string FileSystemIntentResolverSearchDepth = nameof(FileSystemIntentResolverSearchDepth);
         public const string IWorkerAssemblyName = nameof(IWorkerAssemblyName);
+        public const string CouchDbEndpoint = nameof(CouchDbEndpoint);
+        public const string CouchDbAuthUser = nameof(CouchDbAuthUser);
+        public const string CouchDbAuthPass = nameof(CouchDbAuthPass);
     }
 }
