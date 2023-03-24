@@ -110,6 +110,7 @@ message WorkflowStep {
 
 service WorkflowBuilder {
 	rpc FindWorkflows(FindWorkflowsRequest) returns (FindWorkflowsResponse);
+	rpc CreateOrUpdateWorkflow(CreateOrUpdateWorkflowRequest) returns (CreateOrUpdateWorkflowResponse);
 	rpc DiscoverIntentResolvers(DiscoverIntentResolverRequest) returns (DiscoverIntentResolverResponse);
 }
 
@@ -120,6 +121,15 @@ message FindWorkflowsRequest {
 
 message FindWorkflowsResponse {
 	repeated Workflow workflows = 1;
+	Error error = 2;
+}
+
+message CreateOrUpdateWorkflowRequest {
+	Workflow workflow = 1;
+}
+
+message CreateOrUpdateWorkflowResponse {
+	Workflow workflow = 1;
 	Error error = 2;
 }
 

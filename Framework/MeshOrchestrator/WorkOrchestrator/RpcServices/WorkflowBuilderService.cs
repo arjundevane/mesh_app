@@ -60,11 +60,11 @@ namespace MeshApp.WorkOrchestrator.RpcServices
 
                 if (!string.IsNullOrEmpty(request.SearchId))
                 {
-                    baseQuery = baseQuery.Where(w => w.Workflow.WorkflowId == request.SearchId);
+                    baseQuery = baseQuery.Where(w => w.Workflow.WorkflowId == request.SearchId.ToLower());
                 }
                 if (!string.IsNullOrEmpty(request.SearchName))
                 {
-                    baseQuery = baseQuery.Where(w => w.Workflow.WorkflowName == request.SearchName);
+                    baseQuery = baseQuery.Where(w => w.Workflow.WorkflowName == request.SearchName.ToLower());
                 }
 
                 var workflows = await baseQuery.ToListAsync();
@@ -82,6 +82,64 @@ namespace MeshApp.WorkOrchestrator.RpcServices
             {
                 _logger.LogError(ex, $"Error while performing {nameof(FindWorkflows)} RPC");
                 return new FindWorkflowsResponse
+                {
+                    Error = new WorkStructure.Error.Error
+                    {
+                        ErrorCode = ErrorCode.InternalError,
+                        ErrorMessage = ex.Message,
+                        StackTrace = ex.StackTrace
+                    }
+                };
+            }
+        }
+
+        public override async Task<CreateOrUpdateWorkflowResponse> CreateOrUpdateWorkflow(CreateOrUpdateWorkflowRequest request, ServerCallContext context)
+        {
+            try
+            {
+                if (request?.Workflow == null)
+                    throw new InvalidOperationException($"Workflow content is empty in the request.");
+
+                // Check existing
+                WorkflowDocument? existing = null;
+                if (!string.IsNullOrEmpty(request.Workflow.WorkflowId) || !string.IsNullOrEmpty(request.Workflow.WorkflowName))
+                {
+                    existing = await _dbContext.Workflows
+                        .Where(wf => wf.Workflow.WorkflowId == request.Workflow.WorkflowId.ToLower()
+                            || wf.Workflow.WorkflowName == request.Workflow.WorkflowName)
+                        .FirstOrDefaultAsync();
+                }
+
+                if (existing != null)
+                {
+                    existing.Workflow = request.Workflow;
+
+                    await _dbContext.Workflows.AddOrUpdateAsync(existing, batch: false, context.CancellationToken);
+
+                    return new CreateOrUpdateWorkflowResponse
+                    {
+                        Workflow = existing.Workflow
+                    };
+                }
+                else
+                {
+                    request.Workflow.WorkflowId = Guid.NewGuid().ToString().ToLower();
+                    request.Workflow.WorkflowName = request.Workflow.WorkflowName;
+                    var persistedWorkflow = await _dbContext.Workflows.AddAsync(new WorkflowDocument
+                    {
+                        Workflow = request.Workflow
+                    }, batch: false, context.CancellationToken);
+
+                    return new CreateOrUpdateWorkflowResponse
+                    {
+                        Workflow = persistedWorkflow.Workflow
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error while performing {nameof(CreateOrUpdateWorkflow)} RPC");
+                return new CreateOrUpdateWorkflowResponse
                 {
                     Error = new WorkStructure.Error.Error
                     {

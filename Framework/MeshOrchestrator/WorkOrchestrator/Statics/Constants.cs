@@ -22,13 +22,13 @@ namespace MeshApp.WorkOrchestrator.Statics
             FindMostEfficientCarByMakeWorkflow.WorkflowSteps.Add(new WorkflowStep
             {
                 StepId = "06E3D5BD-4107-4CDB-AB00-2D9A304CBC64",
-                StepName = "FindMostEfficientCarByMakeStart",
+                StepName = "FindEfficiencyForCarsByMake",
                 SingleStep = IntentMap.Intents["FindMostEfficientCarByMakeStart"]
             });
             FindMostEfficientCarByMakeWorkflow.WorkflowSteps.Add(new WorkflowStep
             {
                 StepId = "E381D73F-C0A1-4052-BBC0-6AF64A2520A0",
-                StepName = "FindMostEfficientCarByMakeStart",
+                StepName = "FindMostEfficientFromGivenList",
                 SingleStep = IntentMap.Intents["FindMostEfficientCarByMakeStart"]
             });
 
