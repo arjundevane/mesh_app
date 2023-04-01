@@ -1,0 +1,27 @@
+{
+  "profiles": {
+    "WorkOrchestrator": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\arjun\\Desktop\\Mesh\\Full Implementation\\Orchestrator\\WorkOrchestrator\\bin\\Release\\net6.0",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:5002"
+    },
+    "[IIS] WorkOrchestrator": {
+      "commandName": "IIS",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "nativeDebugging": false
+    }
+  },
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "https://localhost:6002",
+      "sslPort": 0
+    }
+  }
+}

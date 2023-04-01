@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "WorkerInstance": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "IsOverrideDynamicPort": "false",
+        "OverrideDynamicPort": "5101"
+      }
+    }
+  }
+}
